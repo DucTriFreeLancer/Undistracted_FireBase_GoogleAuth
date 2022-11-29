@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="/src/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/src/css/jquery-ui.css">
+	<link rel="stylesheet" href="/src/css/bootstrap4-toggle.min.css">
+	<link rel="stylesheet" href="/src/css/fontawesome.min.css">
+	<link rel="stylesheet" href="/src/css/app.css">
+	<link rel="stylesheet" href="/src/css/index.css">
+	<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+	<meta name="theme-color" content="#000000">
+	<title>UnDistracted</title>
+	<link rel="stylesheet" href="/src/css/toastr.min.css">
+	<link rel="stylesheet" href="/src/css/datepicker.css">
+	<link rel="stylesheet" href="/src/css/static.css">
+	<link rel="stylesheet" href="/src/css/main.css">
+	<style type="text/css">
+		/* Vertical Tabs
+		----------------------------------*/
+		.ui-tabs-vertical {
+			width: 55em;
+		}
+
+		.ui-tabs-vertical .ui-tabs-nav {
+			float: left;
+			width: 12em;
+		}
+
+		.ui-tabs-vertical .ui-tabs-nav li {
+			clear: left;
+			width: 100%;
+			border-bottom-width: 1px !important;
+			margin: 3px;
+			padding-bottom: 1px;
+			height: 51px;
+		}
+
+		.ui-tabs-vertical .ui-tabs-nav li a {
+			display: block;
+			width: 100%;
+		}
+
+		.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+			border-right: 3px solid blue !important;
+			margin: 3px;
+			border: 1px solid #c5c5c5;
+			width: 100%;
+			height: 51px;
+		}
+
+		.ui-tabs-vertical .ui-tabs-panel {
+			padding: 1em;
+			float: left;
+			width: 25em;
+		}
+		.ui-state-active a:link,.ui-state-active, .ui-widget-content .ui-state-active {
+			color: #1890ff;
+			font-weight: 500;
+			background: #f6f6f6 !important;
+			border: none;
+		}
+		#ultwitter .btn-primary {
+			background-color: #87CEEB;
+    		border-color: #19BDFF;
+		}
+		#ulreddit .btn-danger {
+			background-color: #FF7518;
+    		border-color: #FF7518;
+		}
+	</style>
+</head>
+
+<body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="ssa_tab">
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#youtube">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/youtube.png">
+					</span>
+					<span class="panel-header-title">Youtube</span>
+				</a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#facebook">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/facebook.png">
+					</span>
+					<span class="panel-header-title">Facebook</span>
+					</i></a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#instagram">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/instagram.png">
+					</span>
+					<span class="panel-header-title">Instagram</span>
+					</i></a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#tiktok">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/tiktok.png">
+					</span>
+					<span class="panel-header-title">Tiktok</span>
+					</i></a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#reddit">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/reddit.png">
+					</span>
+					<span class="panel-header-title">Reddit</span>
+				</a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#twitter">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/twitter.png">
+					</span>
+					<span class="panel-header-title">Twitter</span>
+				</a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#netflix"  aria-disabled="true">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/Netflix.png">
+					</span>
+					<span class="panel-header-title">Netflix</span>
+				</a>
+			</li>
+			<li class="nav-item nav-item-tabs">
+				<a class="nav-link nav-link-tabs" data-toggle="tab" href="#setting" aria-disabled="true">
+					<span class="ant-avatar panel-logo ant-avatar-circle ant-avatar-image">
+						<img src="/src/images/Settings.png">
+					</span>
+					<span class="panel-header-title">Settings</span>
+				</a>
+			</li>
+		</ul>
+		<div class="tab-content ">
+			<div id="facebook" class="container tab-pane header header-facebook">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulfacebook" class="ant-list-items">
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="youtube" class="container tab-pane header header-youtube">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulyoutube" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="twitter" class="container tab-pane header header-twitter">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ultwitter" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tiktok" class="container tab-pane header header-tiktok">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ultiktok" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="instagram" class="container tab-pane header header-instagram">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulinstagram" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="reddit" class="container tab-pane header header-reddit">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulreddit" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="netflix" class="container tab-pane header header-netflix">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulnetflix" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="setting" class="container tab-pane header header-setting">
+				<div class="ant-list ant-list-split ant-list-bordered" style="border: 0px;">
+					<div class="ant-spin-nested-loading">
+						<div class="ant-spin-container">
+							<ul id="ulsetting" class="ant-list-items">
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal modal-sm fade" id="customURLListModal" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-body">
+						<form class="needs-validation">
+							<div class="form-group">
+								<div class="btn-toolbar mb-3" role="toolbar">
+									<div class="input-group input-group-sm">
+										<div class="input-group-prepend">
+											<div class="input-group-text input-sm input-control" id="btnGroupAddon">https://</div>
+										</div>
+										<input id="inputCustomURL" type="text" class="form-control input-sm h-100" placeholder="www.instagram.com" aria-describedby="btnGroupAddon">
+										<button type="submit" id="addCustomURL" class="btn btn-success">+</button>
+									</div>
+								</div>
+							</div>
+							<div class="url-tags">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/src/js/jquery.min.js"></script>
+	<script src="/src/js/jquery-ui.min.js"></script>
+	<script src="/src/js/bootstrap.min.js"></script>
+	<script src="/src/js/bootstrap4-toggle.min.js"></script>
+	<script src="/src/js/jquery.validate.js"></script>
+	<script src="/src/js/toastr.min.js"></script>
+	<script type="text/javascript" src="/src/js/moment.min.js"></script>
+	<script type="text/javascript" src="/src/js/datepicker.js"></script>
+	<script type="text/javascript" src="/src/js/fontawesome.min.js"></script>
+</body>
+</html>

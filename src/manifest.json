@@ -1,0 +1,87 @@
+{
+  "manifest_version": 3,
+  "version": "1.0.0",
+  "name": "Toggle CSS elements ",
+  "short_name": "S$A",
+  "action": {
+    "default_popup": "./popup.html",
+    "default_icon": {
+      "16": "./src/icons/16.png",
+      "32": "./src/icons/32.png",
+      "64": "./src/icons/64.png",
+      "128": "./src/icons/128.png"
+    },
+    "default_title": "UnDi$tracted"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "identity",
+    "webNavigation"
+  ],
+  "content_scripts": [
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-facebook.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.facebook.com/*" ]
+    }, 
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-youtube.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.youtube.com/*"  ]
+    },
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-tiktok.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.tiktok.com/*"  ]
+    },
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-instagram.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.instagram.com/*"  ]
+    },
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-reddit.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.reddit.com/*"  ]
+    },
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-twitter.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.twitter.com/*","*://*.twimg.com/*","*://*.twttr.net/*" ,"*://*.twttr.com/*",
+       "*://*.abs.twimg.com/*" ]
+    },
+    {
+       "js": [ "/src/js/jquery.min.js","/src/content/undistracted-netflix.js"],
+       "run_at":"document_start",
+       "matches": [ "*://*.netflix.com/*" ]
+    }],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "icons": {
+    "16": "./src/icons/16.png",
+    "32": "./src/icons/32.png",
+    "64": "./src/icons/64.png",
+    "128": "./src/icons/128.png"
+  },
+  "options_page": "options.html",
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline' https://apis.google.com;"
+  },
+ "oauth2": {
+    "client_id": "949654006595-5tc0ot14cutp2ibtoj67u3fh6cuidecj.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
+ },
+ "key":"kalbngbdolkglnmcmgkopkpnhljicfcb",
+ "web_accessible_resources": [{
+    "resources":["assets/images/64.png", "src/images/welcome.png",
+    "src/css/static.css","src/images/delete_icon.png","firebase_config.js"],
+    "matches": ["<all_urls>"]
+ }]
+}

@@ -1,0 +1,145 @@
+:root {
+  /* --facebook: #3b5998;
+   */
+  /* --twitter: #1da1f2;
+   */
+  /* --youtube: #ff0000;
+   */
+  /* --reddit: #ff4301;
+   */
+  /* --disabled-grey: #808080;
+   */
+  /* --theme: #1c969c;
+   */
+}
+html {
+  height: auto;
+  width: auto;
+}
+
+body {
+  margin: 5px;
+  min-width: 450px;
+  max-width: 500px;
+}
+
+p {
+  margin: 0;
+}
+
+.undistracted-tabs.ant-tabs .ant-tabs-left-bar .ant-tabs-tab {
+  text-align: left;
+  margin: 0;
+  padding: 8px 16px;
+}
+
+.undistracted-tabs.ant-tabs .ant-tabs-left-content {
+  padding-left: 0;
+}
+
+.disabled-filters .panel-logo {
+  filter: grayscale(1);
+}
+.ant-row.ant-form-item {
+  margin-right: 0;
+}
+.filterDescription {
+  margin-right: auto;
+  white-space: nowrap;
+}
+
+.filterDescription.complex-filter {
+  min-width: 33%;
+}
+
+.text-list-controls,
+.time-list-controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.stacked-time-selectors {
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-time-picker:first-child {
+  margin-bottom: 3px;
+}
+
+.red-setting .filterDescription {
+  color: #cc0000;
+  font-weight: 500;
+}
+
+.ant-form-item-control.ant-form-item-control {
+  line-height: unset;
+}
+
+/* URL form alignment */
+
+.url-form .url-form-item.url-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+}
+
+.submittable.url-form {
+  white-space: nowrap;
+}
+
+.submittable.url-form .url-form-item .ant-input-group-wrapper {
+  top: 0;
+}
+
+.submittable.url-form .url-form-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.submittable.url-form .url-form-submit {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.url-form .has-feedback .ant-input {
+  padding-right: 7px;
+}
+
+.url-form .has-error.has-feedback .ant-form-item-children-icon {
+  height: 25px;
+}
+
+.url-tags {
+  margin-top: 14px;
+}
+
+.url-tags > * {
+  margin-top: 5px;
+}
+
+.panel-logo {
+  margin-right: 12px;
+}
+
+.ant-list-bordered .ant-list-item.filterListItem {
+  padding: 7px 12px;
+}
+
+.timePickers {
+  display: flex;
+  align-items: center;
+}
+
+.timePickers :not(:nth-child(3)) {
+  margin-right: 5px;
+}
+
+.timePicker {
+  margin: 0 10px 0 0;
+}
+
+.timePicker input {
+  padding: 3px;
+}
