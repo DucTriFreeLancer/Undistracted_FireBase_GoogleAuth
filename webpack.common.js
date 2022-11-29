@@ -27,11 +27,6 @@ module.exports = {
     // chunks: being the script src
     // if the script src is modular then add it as the entry point above
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "options", "options.html"),
-      filename: "options.html",
-      chunks: ["options"] // This is script from entry point
-    }),
-    new HtmlWebpackPlugin({
       template: path.join(__dirname, "src", "popup", "main.html"),
       filename: "main.html",
       chunks: ["main_script"] // This is script from entry point
