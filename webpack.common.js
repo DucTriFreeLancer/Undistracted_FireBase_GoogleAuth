@@ -13,7 +13,9 @@ module.exports = {
     firebase_config: './src/popup/firebase_config.js',
     popup: './src/popup/popup.js',
     main_script: './src/popup/main-script.js',
-    options: './src/options/options.js',
+    customer_service: './src/popup/customer_service.js',
+    subscription_service: './src/popup/subscription_service.js',
+    stripe_payments: './src/popup/stripe_payments.js'
   },
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),

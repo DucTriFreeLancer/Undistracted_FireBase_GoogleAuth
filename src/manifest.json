@@ -72,12 +72,15 @@
     "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline' https://apis.google.com;"
   },
  "oauth2": {
-    "client_id": "949654006595-5tc0ot14cutp2ibtoj67u3fh6cuidecj.apps.googleusercontent.com",
+    "client_id": "203641531064-23v09912p82osni878lsv4gqhk41lqif.apps.googleusercontent.com",
     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
+      "profile",
+      "email",
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
     ]
  },
- "key":"kalbngbdolkglnmcmgkopkpnhljicfcb",
+ "key":"efpenhbkmiedidgdneeahgggpocnlbmd",
  "web_accessible_resources": [{
     "resources":["assets/images/64.png", "src/images/welcome.png",
     "src/css/static.css","src/images/delete_icon.png","firebase_config.js"],

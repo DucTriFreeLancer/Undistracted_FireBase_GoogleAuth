@@ -27,10 +27,15 @@ h1 {
   color: #fff;
   text-align: center;
   font-size: 40px;
-  font-weight: 100;
-  margin: 0 0 30px;
+  margin: 5px 0 30px;
   padding: 0;
   color: #fff;
+}
+h3 {
+  color: #fff;
+  text-align: left;
+  font-size: 20px;
+  padding: 0;
 }
 
 .btn {

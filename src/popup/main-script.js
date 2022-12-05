@@ -1,14 +1,20 @@
 import { relatedDomains,isValidHttpUrl } from './firebase_config'
+import {
+    getAuth,
+	signOut
+} from 'firebase/auth';
 const state = {
     twitterSettings: {},
     youtubeSettings: {},
     facebookSettings: {},
-	  tiktokSettings:{},
-	  instagramSettings:{},
+	tiktokSettings:{},
+	instagramSettings:{},
     redditSettings: {},
     netflixSettings: {},
     linkedinSettings: {},
     generalSettings: {},
+    userSettings: {},
+	subscriptionSettings:{},
     tabOrder: [1, 2, 3, 4, 5, 6, 7],
 };
 const pauseTime = 5 * 60 * 1000;
@@ -24,7 +30,9 @@ $(document).ready(function() {
 			'tiktokSettings',
 			'redditSettings',
 			'netflixSettings',
-			'generalSettings'
+			'generalSettings',
+			'userSettings',
+			'subscriptionSettings'
 		  ],
 		  ({
 			twitterSettings = {},
@@ -34,8 +42,14 @@ $(document).ready(function() {
 			netflixSettings = {},
 			generalSettings = {},
 			tiktokSettings = {},
-			instagramSettings ={}
+			instagramSettings ={},
+			userSettings ={},
+			subscriptionSettings={}
 		  }) => {
+			state.userSettings = userSettings
+			SetSignedUserInfo(state.userSettings);
+			state.subscriptionSettings = subscriptionSettings
+			SetSubscriptionInfo(state.subscriptionSettings);
 			state.facebookSettings = facebookSettings;
 			SetToggleElement("#ulfacebook","facebookSettings", state.facebookSettings);
 			state.youtubeSettings = youtubeSettings;
@@ -453,3 +467,39 @@ const disableFilters=()=>{
 		$("#ssa_tab").removeClass("disabled-filters");
 	}
 }
+function SetSignedUserInfo(settings){
+	$('#photoUrl').attr("src",settings.photoURL);
+	$('#displayName').text(settings.displayName);
+	$('#email').text(settings.email);
+	$('#sign-out').on("click",()=>{
+		const auth = getAuth();
+		signOut(auth).then(() => {
+			chrome.storage.sync.set({
+				userSettings: {}
+			},window.location.replace('./popup.html'));
+		}).catch((error) => {
+		// An error happened.
+		});
+	})
+}
+function SetSubscriptionInfo(subscriptionSettings) {
+	if(subscriptionSettings.trial !== undefined && subscriptionSettings.trial == true){
+		if(settings.endtime !==undefined && subscriptionSettings.endtime >= Date.now())
+		{
+			$('#trial').text("Your trial period will expired in" + dhm(subscriptionSettings.endtime-Date.now()));
+		}
+		else{
+			$('#trial').text("Your trial has expired");
+		}
+	}
+}
+function dhm (ms) {
+	const days = Math.floor(ms / (24*60*60*1000));
+	const daysms = ms % (24*60*60*1000);
+	const hours = Math.floor(daysms / (60*60*1000));
+	const hoursms = ms % (60*60*1000);
+	const minutes = Math.floor(hoursms / (60*1000));
+	const minutesms = ms % (60*1000);
+	const sec = Math.floor(minutesms / 1000);
+	return days + ":" + hours + ":" + minutes + ":" + sec;
+  }

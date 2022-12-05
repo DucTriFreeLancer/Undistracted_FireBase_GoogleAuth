@@ -1,22 +1,25 @@
 import { initializeApp } from 'firebase/app';
-
+import { getFirestore } from "firebase/firestore";
 // TODO Fill Me! 
 // Find my details from Firebase Console
 
 // config after registering firebase App 
-const config = {
-  apiKey: "AIzaSyAc8I6kcF6Y-sNoi6BA4ZESxpMKaKv0jN4",
-  authDomain: "undistracted-63e13.firebaseapp.com",
-  projectId: "undistracted-63e13",
-  storageBucket: "undistracted-63e13.appspot.com",
-  messagingSenderId: "949654006595",
-  appId: "1:949654006595:web:3b81ed4aa2a9ba9fc29df6",
-  measurementId: "G-QPXSBDBYT7"
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDGmdNgG4A-ihnZY7m8CtNe7KleZnBzu8A",
+  authDomain: "togglecss-v01.firebaseapp.com",
+  projectId: "togglecss-v01",
+  storageBucket: "togglecss-v01.appspot.com",
+  messagingSenderId: "203641531064",
+  appId: "1:203641531064:web:e0600a302f4353d69ee24d"
 };
+//const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
 
 // This creates firebaseApp instance
 // version: SDK 9
-const firebaseApp = initializeApp(config)
+const firebaseApp = initializeApp(firebaseConfig)
+const fireStore = getFirestore(firebaseApp);
+
 const relatedDomains = {
   facebook: ['facebook.com', 'fb.com'],
   youtube: ['youtube.com', 'youtu.be'],
@@ -39,6 +42,8 @@ return urlregex.test(textval);
 }
 export{
     firebaseApp,
+    fireStore,
+    //stripe,
     relatedDomains,
     isValidHttpUrl
 }
