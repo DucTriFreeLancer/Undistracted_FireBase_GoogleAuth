@@ -3,6 +3,8 @@ import {
     getAuth,
 	signOut
 } from 'firebase/auth';
+import { customerDataService } from './customer_service';
+const auth = getAuth();
 const state = {
     twitterSettings: {},
     youtubeSettings: {},
@@ -49,7 +51,7 @@ $(document).ready(function() {
 			state.userSettings = userSettings
 			SetSignedUserInfo(state.userSettings);
 			state.subscriptionSettings = subscriptionSettings
-			SetSubscriptionInfo(state.subscriptionSettings);
+			SetSubscriptionInfo(state.userSettings,state.subscriptionSettings);
 			state.facebookSettings = facebookSettings;
 			SetToggleElement("#ulfacebook","facebookSettings", state.facebookSettings);
 			state.youtubeSettings = youtubeSettings;
@@ -469,10 +471,8 @@ const disableFilters=()=>{
 }
 function SetSignedUserInfo(settings){
 	$('#photoUrl').attr("src",settings.photoURL);
-	$('#displayName').text(settings.displayName);
-	$('#email').text(settings.email);
+	$('#displayName').text(settings.displayName +` (${settings.email})`);
 	$('#sign-out').on("click",()=>{
-		const auth = getAuth();
 		signOut(auth).then(() => {
 			chrome.storage.sync.set({
 				userSettings: {}
@@ -482,14 +482,50 @@ function SetSignedUserInfo(settings){
 		});
 	})
 }
-function SetSubscriptionInfo(subscriptionSettings) {
+async function SetSubscriptionInfo(userSettings,subscriptionSettings) {
 	if(subscriptionSettings.trial !== undefined && subscriptionSettings.trial == true){
-		if(settings.endtime !==undefined && subscriptionSettings.endtime >= Date.now())
+		$("#manage_subscription").css("display","none");
+		if(subscriptionSettings.endtime !==undefined && subscriptionSettings.endtime >= Date.now())
 		{
-			$('#trial').text("Your trial period will expired in" + dhm(subscriptionSettings.endtime-Date.now()));
+			$('#subscription').text("Trial Plan");
+			$('#subscription').prop("title","Upgrade to Premium Plan" );
+			$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.endtime));
+			$('#ssa_tab').removeClass("ssa_tab_disable");
 		}
 		else{
-			$('#trial').text("Your trial has expired");
+			$('#subscription').text("Your trial has expired");
+			$('#subscription').prop("title","Please subcribe to continue use" );
+			$('#ssa_tab').addClass("ssa_tab_disable");
+		}
+		$('#subscription').on("click",async()=>{
+			$('.loader').css("display","block")
+			await customerDataService.addSubscription(userSettings.uid);
+		})
+	}
+	else{
+		$("#manage_subscription").css("display","block")
+		if(subscriptionSettings.status == "active")
+		{
+			$('#subscription').text(subscriptionSettings.name);
+			$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.current_period_end.seconds*1000));
+			$("#manage_subscription").text("Manage your subscription");
+			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
+			$('#ssa_tab').removeClass("ssa_tab_disable");
+			$('#manage_subscription').on("click",async()=>{
+				$('.loader').css("display","block")
+				var portal_link = await customerDataService.getCustomerPortalLink();
+				chrome.tabs.create({ url: portal_link });
+			})
+		}
+		else{
+			$('#subscription').text(`Your ${subscriptionSettings.name} has expired`);
+			$("#manage_subscription").text("Renew subscription");
+			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
+			$('#ssa_tab').addClass("ssa_tab_disable");
+			$('#manage_subscription').on("click",async()=>{
+				$('.loader').css("display","block")
+				await customerDataService.addSubscription(userSettings.uid);
+			})
 		}
 	}
 }
@@ -503,3 +539,8 @@ function dhm (ms) {
 	const sec = Math.floor(minutesms / 1000);
 	return days + ":" + hours + ":" + minutes + ":" + sec;
   }
+function toDateTime(secs) {
+    var t = new Date(); // Epoch
+    t.setTime(secs);
+    return t.toLocaleString('en-GB',{hour12: false});
+}

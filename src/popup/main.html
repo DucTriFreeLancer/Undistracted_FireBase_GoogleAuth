@@ -69,29 +69,37 @@
 			background-color: #FF7518;
     		border-color: #FF7518;
 		}
+		.ssa_tab_disable{
+			background:gray;
+			opacity:0.4;
+			pointer-events:none;
+		  }
 	</style>
 </head>
 
 <body>
 	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div class="loader" style="display:none;">
+		<img src="/src/icons/64.png" width="64px" height="64px">
+	</div>
 	<div id="ssa_user_info">
 		<div class="d-flex justify-content-between bd-highlight">
 			<div class="bd-highlight">
-				<img id="photoUrl" height="45px" class="rounded">
+				<img id="photoUrl" height="71px" class="rounded">
 				
 			</div>
 			<div class="card-body d-flex flex-column align-items-start p-0 ml-1">
-				<span id="displayName" class="header-title">
+				<span id="displayName" class="header-title text-primary">
 				</span>
-				<span id="email" class="mb-1 text-muted">
-				</span>
-				<span id="trial" class="mb-1 text-muted">
-				</span>
-				<span id="subscription" class="mb-1 text-muted">
+				<a href="#" class="link-success" id="subscription"></a>
+				<span id="expired" class="mb-1 text-primary">
 				</span>
 			</div>
-			<div class="bd-highlight">
-				<input id="sign-out" type="button" class="btn btn-primary float-right" height="45px" value="Sign out">
+			<div class="card-body d-flex flex-column align-items-end p-0 ml-1">
+				<div class="form-group" style="padding-right:5px">
+					<input id="sign-out" type="button" class="btn btn-primary float-right" height="45px" value="Sign out">
+					<a href="#" style="display:none;" id="manage_subscription">Upgrade</a>
+				</div>
 			</div>
 		</div>
 	</div>

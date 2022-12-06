@@ -1,5 +1,6 @@
-import {fireStore} from "./firebase_config.js";
-import {collection,getDocs,getDoc,doc,documentId, setDoc,deleteDoc,query,where,addDoc,onSnapshot} from "firebase/firestore"; 
+import {fireStore,firebaseApp,STRIPE_PRICE_ID} from "./firebase_config.js";
+import { getFunctions,httpsCallable } from "firebase/functions"; 
+import {collection,getDocs,getDoc,doc, setDoc,deleteDoc,query,where,addDoc,onSnapshot} from "firebase/firestore"; 
 const userRef = collection(fireStore,"customers");
 
 class CustomerDataService {
@@ -22,13 +23,21 @@ class CustomerDataService {
   async delete(id) {
     return await deleteDoc(doc(userRef,id));
   }
+  async IsTrialUser(id) {
+    const trialRef = collection(fireStore,"trials");
+    return await getDoc(doc(trialRef,id));
+  }
+  async markUserIsTrial(id,value) {
+    const trialRef = collection(fireStore,"trials");
+    return await setDoc(doc(trialRef,id),value);
+  }
   async addSubscription(id){
     var custDoc = doc(userRef,id);
     var checkoutSessionRef = collection(custDoc,"checkout_sessions");
     var docRef = await addDoc(checkoutSessionRef,{
-      price: 'price_1MAyD9CLHIOm9ah1fMbHKJV9',
-      success_url: "https://us-central1-togglecss-v01.cloudfunctions.net/home",//window.location.replace('./main.html'),
-      cancel_url: "https://us-central1-togglecss-v01.cloudfunctions.net"
+      price: STRIPE_PRICE_ID,
+      success_url: "https://www.google.com",
+      cancel_url: "https://www.google.com"
     });
     // Wait for the CheckoutSession to get attached by the extension
     onSnapshot(docRef,(snap) => {
@@ -47,8 +56,17 @@ class CustomerDataService {
   async getSubscription(id){
     var custDoc = doc(userRef,id);
     var q = query(collection(custDoc,"subscriptions"), where("status", "in",['trialing', 'active']));
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(collection(custDoc,"subscriptions"));
     return querySnapshot;
+  }
+  async getCustomerPortalLink(){
+    const functions = getFunctions(firebaseApp,'us-central1');
+    const portalFunction  = httpsCallable(functions,'ext-firestore-stripe-payments-createPortalLink');
+    const { data } = await portalFunction({
+    returnUrl:"https://www.google.com",
+    locale: "auto"
+    });
+    return data.url;
   }
 }
 const customerDataService = new CustomerDataService();

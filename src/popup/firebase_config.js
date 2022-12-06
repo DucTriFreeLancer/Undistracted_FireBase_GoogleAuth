@@ -40,10 +40,11 @@ const isValidHttpUrl = (textval)=>{
 var urlregex = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi
 return urlregex.test(textval);
 }
+const STRIPE_PRICE_ID = "price_1MAyD9CLHIOm9ah1fMbHKJV9"
 export{
     firebaseApp,
     fireStore,
-    //stripe,
+    STRIPE_PRICE_ID,
     relatedDomains,
     isValidHttpUrl
 }
