@@ -508,7 +508,7 @@ async function SetSubscriptionInfo(userSettings,subscriptionSettings) {
 		{
 			$('#subscription').text(subscriptionSettings.name);
 			$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.current_period_end.seconds*1000));
-			$("#manage_subscription").text("Manage your subscription");
+			$("#manage_subscription").text("Manage your plan");
 			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
 			$('#ssa_tab').removeClass("ssa_tab_disable");
 			$('#manage_subscription').on("click",async()=>{
@@ -519,7 +519,7 @@ async function SetSubscriptionInfo(userSettings,subscriptionSettings) {
 		}
 		else{
 			$('#subscription').text(`Your ${subscriptionSettings.name} has expired`);
-			$("#manage_subscription").text("Renew subscription");
+			$("#manage_subscription").text("Renew your plan");
 			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
 			$('#ssa_tab').addClass("ssa_tab_disable");
 			$('#manage_subscription').on("click",async()=>{
