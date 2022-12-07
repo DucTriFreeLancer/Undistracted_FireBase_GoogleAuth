@@ -36,6 +36,10 @@ class CustomerDataService {
     var checkoutSessionRef = collection(custDoc,"checkout_sessions");
     var docRef = await addDoc(checkoutSessionRef,{
       price: STRIPE_PRICE_ID,
+      trial_from_plan:false,
+      allow_promotion_codes: true,
+      automatic_tax:true,
+      automatic_tax:true,
       success_url: "https://www.google.com",
       cancel_url: "https://www.google.com"
     });

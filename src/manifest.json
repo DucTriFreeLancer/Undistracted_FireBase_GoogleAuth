@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "version": "1.0.0",
-  "name": "Toggle CSS elements ",
-  "short_name": "S$A",
+  "version": "2.0.0",
+  "name": "Uniblocker",
+  "short_name": "Uniblocker",
   "action": {
     "default_popup": "./popup.html",
     "default_icon": {
@@ -80,7 +80,6 @@
       "https://www.googleapis.com/auth/userinfo.profile"
     ]
  },
- "key":"efpenhbkmiedidgdneeahgggpocnlbmd",
  "web_accessible_resources": [{
     "resources":["assets/images/64.png", "src/images/welcome.png",
     "src/css/static.css","src/images/delete_icon.png","firebase_config.js"],
