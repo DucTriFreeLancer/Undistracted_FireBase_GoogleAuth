@@ -11,6 +11,7 @@ module.exports = {
   // Any modular script should be added as entry point
   entry: {
     firebase_config: './src/popup/firebase_config.js',
+    background: './src/background/background.js',
     popup: './src/popup/popup.js',
     main_script: './src/popup/main-script.js',
     customer_service: './src/popup/customer_service.js'
@@ -35,7 +36,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: './src/manifest.json' },
-        { from: './src/background/background.js' },
+        { from: './src/background/background-wrapper.js' },
         { from: './src/content/*' },
         { from: './src/js/*' },
         { from: './src/icons/*' },

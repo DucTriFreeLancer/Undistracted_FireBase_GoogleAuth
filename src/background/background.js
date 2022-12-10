@@ -1,5 +1,51 @@
-import {} from './firebase_config.js'
+import { customerDataService } from '../popup/customer_service'
+async function redirectToMainPage(user){
+    
+  // User is signed in.
+  var userinfo = (await customerDataService.getOne(user.uid)).data();
+  if(userinfo !== undefined){
+      userinfo.uid = user.uid;
+      userinfo.displayName = user.displayName;
+      userinfo.photoURL = user.photoURL;
+      userinfo.providerId = user.providerData[0].providerId;
 
+      chrome.storage.sync.set({
+          userSettings:userinfo
+      });
+      // User is signed in.
+      // userDocument.trial = true;
+      // userDocument.endtime = Date.now() + 7 * 24 * 60 * 60 * 1000;
+      var subSnapShot = await customerDataService.getSubscription(user.uid);
+      const trialUser = await customerDataService.IsTrialUser(user.uid);
+      if(subSnapShot.size == 0) {
+          if(trialUser.exists()){
+              chrome.storage.sync.set({
+                  subscriptionSettings: trialUser.data()
+              }
+              );
+          }
+          else{
+              var data = { trial:true,endtime:Date.now() + 7 * 24 * 60 * 60 * 1000};
+              await customerDataService.markUserIsTrial(user.uid,data);
+              chrome.storage.sync.set({
+                  subscriptionSettings:data
+              }
+              );
+          }
+          chrome.action.openPopup();
+      }
+      else{
+          var subData= subSnapShot.docs[subSnapShot.size-1].data();
+          chrome.storage.sync.set({
+              subscriptionSettings: {name:subData.items[0].price.product.name, 
+                  current_period_end:subData.current_period_end,
+                  status:subData.status
+              }
+          });
+          chrome.action.openPopup();
+      }
+  }
+}
 // Avoid circular
 const fallbackUrl = 'https://www.google.com';
 var myTimer;

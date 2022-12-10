@@ -1,10 +1,59 @@
-import { relatedDomains,isValidHttpUrl } from './firebase_config'
+import { relatedDomains,isValidHttpUrl,firebaseApp } from './firebase_config'
+
 import {
     getAuth,
-	signOut
+    signOut,
+    setPersistence,
+    browserLocalPersistence
 } from 'firebase/auth';
 import { customerDataService } from './customer_service';
-const auth = getAuth();
+const auth = getAuth(firebaseApp);
+
+async function redirectToMainPage(user){
+    
+    // User is signed in.
+    var userinfo = (await customerDataService.getOne(user.uid)).data();
+    if(userinfo !== undefined){
+        userinfo.uid = user.uid;
+        userinfo.displayName = user.displayName;
+        userinfo.photoURL = user.photoURL;
+        userinfo.providerId = user.providerData[0].providerId;
+
+        chrome.storage.sync.set({
+            userSettings:userinfo
+        });
+        // User is signed in.
+        // userDocument.trial = true;
+        // userDocument.endtime = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        var subSnapShot = await customerDataService.getSubscription(user.uid);
+        const trialUser = await customerDataService.IsTrialUser(user.uid);
+        if(subSnapShot.size == 0) {
+            if(trialUser.exists()){
+                chrome.storage.sync.set({
+                    subscriptionSettings: trialUser.data()
+                }
+                );
+            }
+            else{
+                var data = { trial:true,endtime:Date.now() + 7 * 24 * 60 * 60 * 1000};
+                await customerDataService.markUserIsTrial(user.uid,data);
+                chrome.storage.sync.set({
+                    subscriptionSettings:data
+                }
+                );
+            }
+        }
+        else{
+            var subData= subSnapShot.docs[subSnapShot.size-1].data();
+            chrome.storage.sync.set({
+                subscriptionSettings: {name:subData.items[0].price.product.name, 
+                    current_period_end:subData.current_period_end,
+                    status:subData.status
+                }
+            });
+        }
+    }
+}
 const state = {
     twitterSettings: {},
     youtubeSettings: {},
@@ -22,94 +71,109 @@ const state = {
 const pauseTime = 5 * 60 * 1000;
 
 $(document).ready(function() {
-	if (chrome.storage) {
-		chrome.storage.sync.get(
-		  [
-			'twitterSettings',
-			'youtubeSettings',
-			'facebookSettings',
-			'instagramSettings',
-			'tiktokSettings',
-			'redditSettings',
-			'netflixSettings',
-			'generalSettings',
-			'userSettings',
-			'subscriptionSettings'
-		  ],
-		  ({
-			twitterSettings = {},
-			youtubeSettings = {},
-			facebookSettings = {},
-			redditSettings = {},
-			netflixSettings = {},
-			generalSettings = {},
-			tiktokSettings = {},
-			instagramSettings ={},
-			userSettings ={},
-			subscriptionSettings={}
-		  }) => {
-			state.userSettings = userSettings
-			SetSignedUserInfo(state.userSettings);
-			state.subscriptionSettings = subscriptionSettings
-			SetSubscriptionInfo(state.userSettings,state.subscriptionSettings);
-			state.facebookSettings = facebookSettings;
-			SetToggleElement("#ulfacebook","facebookSettings", state.facebookSettings);
-			state.youtubeSettings = youtubeSettings;
-			SetToggleElement("#ulyoutube", "youtubeSettings",state.youtubeSettings );
-			state.tiktokSettings = tiktokSettings;
-			SetToggleElement("#ultiktok", "tiktokSettings",state.tiktokSettings );
-			state.instagramSettings = instagramSettings;
-			SetToggleElement("#ulinstagram", "instagramSettings",state.instagramSettings );
-			state.twitterSettings = twitterSettings;
-			SetToggleElement("#ultwitter", "twitterSettings",state.twitterSettings );
-			state.redditSettings = redditSettings;
-			SetToggleElement("#ulreddit", "redditSettings",state.redditSettings );
-			state.netflixSettings = netflixSettings;
-			SetToggleElement("#ulnetflix", "netflixSettings",state.netflixSettings );
-			state.generalSettings = generalSettings;
-			SetToggleElement("#ulsetting", "generalSettings",state.generalSettings );
-
-			$("#ssa_tab").tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
-			$("#ssa_tab li").removeClass('ui-corner-top').addClass('ui-corner-left');
+	$('.loader').css("display","block")
+	setPersistence(auth,browserLocalPersistence)
+	.then(()=>{
+		if(auth.currentUser == null){
+			window.location.replace('./popup.html');
+		}
+		else{
+			redirectToMainPage(auth.currentUser).then(()=>{
+				console.log('user subscription')
+				if (chrome.storage) {
+					chrome.storage.sync.get(
+					  [
+						'twitterSettings',
+						'youtubeSettings',
+						'facebookSettings',
+						'instagramSettings',
+						'tiktokSettings',
+						'redditSettings',
+						'netflixSettings',
+						'generalSettings',
+						'userSettings',
+						'subscriptionSettings'
+					  ],
+					  ({
+						twitterSettings = {},
+						youtubeSettings = {},
+						facebookSettings = {},
+						redditSettings = {},
+						netflixSettings = {},
+						generalSettings = {},
+						tiktokSettings = {},
+						instagramSettings ={},
+						userSettings ={},
+						subscriptionSettings={}
+					  }) => {
+						state.userSettings = userSettings
+						SetSignedUserInfo(state.userSettings);
+						state.subscriptionSettings = subscriptionSettings
+						SetSubscriptionInfo(state.userSettings,state.subscriptionSettings);
+						state.facebookSettings = facebookSettings;
+						SetToggleElement("#ulfacebook","facebookSettings", state.facebookSettings);
+						state.youtubeSettings = youtubeSettings;
+						SetToggleElement("#ulyoutube", "youtubeSettings",state.youtubeSettings );
+						state.tiktokSettings = tiktokSettings;
+						SetToggleElement("#ultiktok", "tiktokSettings",state.tiktokSettings );
+						state.instagramSettings = instagramSettings;
+						SetToggleElement("#ulinstagram", "instagramSettings",state.instagramSettings );
+						state.twitterSettings = twitterSettings;
+						SetToggleElement("#ultwitter", "twitterSettings",state.twitterSettings );
+						state.redditSettings = redditSettings;
+						SetToggleElement("#ulreddit", "redditSettings",state.redditSettings );
+						state.netflixSettings = netflixSettings;
+						SetToggleElement("#ulnetflix", "netflixSettings",state.netflixSettings );
+						state.generalSettings = generalSettings;
+						SetToggleElement("#ulsetting", "generalSettings",state.generalSettings );
 			
-			chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-				const urlDomain = rootDomain(tabs[0].url);
-				if(relatedDomains.youtube.some((i) => urlDomain.includes(i))){
-					activeTab('youtube');
-			   	} else if(relatedDomains.facebook.some((i) => urlDomain.includes(i))){
-					activeTab('facebook');
-			    } else if(relatedDomains.instagram.some((i) => urlDomain.includes(i))){
-					activeTab('instagram');
-				} else if(relatedDomains.tiktok.some((i) => urlDomain.includes(i))){
-					activeTab('tiktok');
-				} else if(relatedDomains.reddit.some((i) => urlDomain.includes(i))){
-					activeTab('reddit');
-				} else if(relatedDomains.twitter.some((i) => urlDomain.includes(i))){
-					activeTab('twitter');
-				} else if(relatedDomains.netflix.some((i) => urlDomain.includes(i))){
-					activeTab('netflix');
-				}
-			});
-			disableFilters();
-		  }
-		);
-	} 
-	// Update local generalSettings value on timer completion
-	chrome.storage.onChanged.addListener((changes, namespace) => {
-        const [filterCategory, bothChanges] = Object.entries(changes)[0];
-        const newSettings = bothChanges.newValue;
-        const oldSettings = bothChanges.oldValue;
-        if (
-          filterCategory === 'generalSettings' &&
-          newSettings.disableFiltersTemporary.value.active !==
-            oldSettings.disableFiltersTemporary.value.active
-        ) {
-		  setState(filterCategory,newSettings,()=>{
-			disableFilters();
-			$("#ulsetting #disableFiltersTemporary").bootstrapToggle(newSettings.disableFiltersTemporary.value.active?'on':'off');
-		  });
-        }
-    });
+						$("#ssa_tab").tabs().addClass('ui-tabs-vertical ui-helper-clearfix');
+						$("#ssa_tab li").removeClass('ui-corner-top').addClass('ui-corner-left');
+						
+						chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+							const urlDomain = rootDomain(tabs[0].url);
+							if(relatedDomains.youtube.some((i) => urlDomain.includes(i))){
+								activeTab('youtube');
+							   } else if(relatedDomains.facebook.some((i) => urlDomain.includes(i))){
+								activeTab('facebook');
+							} else if(relatedDomains.instagram.some((i) => urlDomain.includes(i))){
+								activeTab('instagram');
+							} else if(relatedDomains.tiktok.some((i) => urlDomain.includes(i))){
+								activeTab('tiktok');
+							} else if(relatedDomains.reddit.some((i) => urlDomain.includes(i))){
+								activeTab('reddit');
+							} else if(relatedDomains.twitter.some((i) => urlDomain.includes(i))){
+								activeTab('twitter');
+							} else if(relatedDomains.netflix.some((i) => urlDomain.includes(i))){
+								activeTab('netflix');
+							}
+						});
+						disableFilters();
+					  }
+					);
+				} 
+				// Update local generalSettings value on timer completion
+				chrome.storage.onChanged.addListener((changes, namespace) => {
+					const [filterCategory, bothChanges] = Object.entries(changes)[0];
+					const newSettings = bothChanges.newValue;
+					const oldSettings = bothChanges.oldValue;
+					if (
+					  filterCategory === 'generalSettings' &&
+					  newSettings.disableFiltersTemporary.value.active !==
+						oldSettings.disableFiltersTemporary.value.active
+					) {
+					  setState(filterCategory,newSettings,()=>{
+						disableFilters();
+						$("#ulsetting #disableFiltersTemporary").bootstrapToggle(newSettings.disableFiltersTemporary.value.active?'on':'off');
+					  });
+					}
+				});
+			})
+		}
+	})
+	.then(()=>{
+		$('.loader').css("display","none")
+	});
 });
 function rootDomain(url) {
 	return url

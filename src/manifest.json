@@ -4,7 +4,7 @@
   "name": "Uniblocker",
   "short_name": "Uniblocker",
   "action": {
-    "default_popup": "./popup.html",
+   "default_popup": "./main.html",
     "default_icon": {
       "16": "./src/icons/16.png",
       "32": "./src/icons/32.png",
@@ -58,8 +58,7 @@
        "matches": [ "*://*.netflix.com/*" ]
     }],
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background-wrapper.js"
   },
   "icons": {
     "16": "./src/icons/16.png",
@@ -82,7 +81,8 @@
  },
  "web_accessible_resources": [{
     "resources":["assets/images/64.png", "src/images/welcome.png",
-    "src/css/static.css","src/images/delete_icon.png","firebase_config.js"],
+    "src/css/static.css","src/images/delete_icon.png","firebase_config.js","firebase/auth"],
     "matches": ["<all_urls>"]
- }]
+ }],
+ "key":"MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDQATefxo1JbdymYd3W5GVQ5bKKmJ23nn5LtL2SHBPeNQcdgk4uvgdx8fvjqXKts5Iau/bsyvYPgExHGaiCsOdccNtObgjYAwhvMHigwvI6SMbktm1h6X/WZN8M2gEwlLfO01H9uY35PsYiyiFoxCvsxSKyqju9onKk3syqQrbuP7eR3Opf27doEGgAxosueBQb/VYSXGATTZxQk+YUsAfIRGMo2T2qElKNXqmsB6mGpTw1jyKmd0psDSUxXmXHHGSW6vmXmqNGP2tgPrA/T/0t1Ku7ZkBX754qPxOgN8s6GzE5aEqV6UZDWAe1SRGuxhmkSy+IH0WZgq9onbjEHgULAgMBAAECggEAX0KPdO77uctEqDZd4JKNC/WGRQ8L/BHsCUPnJckSGEv0zEDnCWUiB78o+uSZjo+UtAWtWljBQ+wgAtfvYpsd+in9ZffiuPr6m+F4/TcKtEKsRAaAJb1IPKnJtRsKPHN/kosZG7glGybymvAzSMW+0Bqgf26TGZASLQuUc81F9eoI27WSCtm8xQQI9lcA8ufO5RBq7nzjsFIQJ/ojQ7YQeS/yPCRvZhEI9gPjHzoHgO4RQfLw201NKOIDwjAjcquoBQfOsdlTEpAvvjdmbS9Lr9CksH+o/z4GbJxeotzZlYXu9sJILCnXdIryxt4DHh4Iswad3+utJQyDNBZrAQz/QQKBgQDw0ODnRQBS/c7HRRgzDUeAFFARS+vsymAWojtXun9qx0zy+9H7YBRqvzsD4XddEhwsXAlP0YDTJn+QA3dhiqDe3WscDhXR1rn9r5Azx3blGVZJuJzFx4O3oNO04HkBwefPEqFFqYmT3PGFwcbUe22KM4q1+nKu1koGDySLKjdUuwKBgQDdHrfmGf0nmCeLmB0p5r18H5CcLR38rrPB4YCiKKPcPy0TYDLhyJ1ppas0FeKVaDkA+XAZ2F+GyyWWXybac9zae8P3UNmBuKQhrFJl1+QSiya2v7ExBDCxTua6YLuPICXVqsi79Z6Yd61tLN7VdylaFr0oYi2lYC5w8sQf8RIz8QKBgFjgDhDsY1k9uKHMe0jkHr5DQOWRSooCioHv78zJ1JqY4WpPy8hlRkO7PdGJ1Z6wv1sTwJAHtu62p5+D1/xUyFhYCV66SA1AnTXmJGcnt1aIClN84ccQgik0Hs4DhkVCxgWjT4fBMTgz86M0x+fFgcDektPkkYy7I2inEAqYUwFfAoGAWOvIgnVDE9AhXwa9+6K54peC/Ps7yuiqizZXF18GfkS9qMQP0jJt8xVXYuvGIdU2z0iAJzSXPcqmA/Gh20mqsAYDiYpu3bbV8mCtBh2qrzZcTDOMWyzXNAaJzLun0WfZLzKt5MBilefSy0u3FNsFux/X08yflJi4NF28Nygn7NECgYBVvWm7lPXXyzmvFUy2UOj/M83QNx7wPsKDmzXtp96jc9/EvS1T0NjoN2QWgt97RXtnwIgTkDyrutbTjvOWjdCRv706pJEH2WLsTy7Oe0FVlIkRFYLDiGha+awhno+Pq3YN+Ei2uPQLw6VrC/ba3PkZFSAYsx7h/yM0Y6AQKYAoJg=="
 }
