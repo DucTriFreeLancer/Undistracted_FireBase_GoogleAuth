@@ -1,51 +1,5 @@
-import { customerDataService } from '../popup/customer_service'
-async function redirectToMainPage(user){
-    
-  // User is signed in.
-  var userinfo = (await customerDataService.getOne(user.uid)).data();
-  if(userinfo !== undefined){
-      userinfo.uid = user.uid;
-      userinfo.displayName = user.displayName;
-      userinfo.photoURL = user.photoURL;
-      userinfo.providerId = user.providerData[0].providerId;
+import { stripeService } from '../popup/stripe_service'
 
-      chrome.storage.sync.set({
-          userSettings:userinfo
-      });
-      // User is signed in.
-      // userDocument.trial = true;
-      // userDocument.endtime = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      var subSnapShot = await customerDataService.getSubscription(user.uid);
-      const trialUser = await customerDataService.IsTrialUser(user.uid);
-      if(subSnapShot.size == 0) {
-          if(trialUser.exists()){
-              chrome.storage.sync.set({
-                  subscriptionSettings: trialUser.data()
-              }
-              );
-          }
-          else{
-              var data = { trial:true,endtime:Date.now() + 7 * 24 * 60 * 60 * 1000};
-              await customerDataService.markUserIsTrial(user.uid,data);
-              chrome.storage.sync.set({
-                  subscriptionSettings:data
-              }
-              );
-          }
-          chrome.action.openPopup();
-      }
-      else{
-          var subData= subSnapShot.docs[subSnapShot.size-1].data();
-          chrome.storage.sync.set({
-              subscriptionSettings: {name:subData.items[0].price.product.name, 
-                  current_period_end:subData.current_period_end,
-                  status:subData.status
-              }
-          });
-          chrome.action.openPopup();
-      }
-  }
-}
 // Avoid circular
 const fallbackUrl = 'https://www.google.com';
 var myTimer;
@@ -557,17 +511,7 @@ const allSettings = {
       type: 'button-list',
       order: 6,
       enabled: true
-    },
-    donate: {
-      value: false,
-      description: '',
-      tooltip: 'Support the development',
-      type: 'image',
-      link:
-        '<style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#5F7FFF !important;border-radius: 5px !important;border: 1px solid transparent !important;padding: 7px 15px 7px 10px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:\'Cookie\', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://paypal.me/hanskang1?country.x=CA&locale.x=en_US"><img src="https://res.cloudinary.com/dxmi9d3vj/image/upload/v1594642510/book_dfhgvh.svg" alt="Buy me a book"><span style="margin-left:5px;font-size:28px !important;">Buy me a book</span></a>',
-      order: 7,
-      enabled: true
-    },
+    }
   },
 };
 
@@ -729,6 +673,7 @@ chrome.runtime.onInstalled.addListener((details) => {
     }
     chrome.storage.sync.set({
       youtubeSettings: updatedYoutubeSettings,
+      subscriptionSettings :{}
     });
   })();
 
@@ -931,3 +876,17 @@ chrome.webNavigation.onBeforeNavigate.addListener(({ frameId, tabId, url }) => {
     }
   }
 });
+// Listen logged_in message from popup.html
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+  if (request.message == 'logged_in') {
+    const customer=  await stripeService.getCustomerByEmail(request.email);
+    if(customer){
+      const subscription= await stripeService.getSubscription(customer.id);
+      if(subscription.length === 0){
+        await stripeService.createTrialSubscription(customer.id);
+      }
+    }
+    sendResponse({ logged_in: true });
+  }
+});
+

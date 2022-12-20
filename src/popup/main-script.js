@@ -25,17 +25,21 @@ async function redirectToMainPage(user){
         // User is signed in.
         // userDocument.trial = true;
         // userDocument.endtime = Date.now() + 7 * 24 * 60 * 60 * 1000;
-        var subSnapShot = await customerDataService.getSubscription(user.uid);
+        var subSnapShot = await customerDataService.getSubscriptionByUserId(user.uid);
         const trialUser = await customerDataService.IsTrialUser(user.uid);
         if(subSnapShot.size == 0) {
             if(trialUser.exists()){
+				var data = trialUser.data();
+				if(data.current_period_end < Date.now()){
+					data.status = "canceled";
+				}
                 chrome.storage.sync.set({
-                    subscriptionSettings: trialUser.data()
+                    subscriptionSettings: data
                 }
                 );
             }
             else{
-                var data = { trial:true,endtime:Date.now() + 7 * 24 * 60 * 60 * 1000};
+                var data = {name:"Trial Plan", status:"trialing"};
                 await customerDataService.markUserIsTrial(user.uid,data);
                 chrome.storage.sync.set({
                     subscriptionSettings:data
@@ -45,6 +49,9 @@ async function redirectToMainPage(user){
         }
         else{
             var subData= subSnapShot.docs[subSnapShot.size-1].data();
+			if(subData.current_period_end.seconds*1000 < Date.now()){
+				subData.status = "canceled";
+			}
             chrome.storage.sync.set({
                 subscriptionSettings: {name:subData.items[0].price.product.name, 
                     current_period_end:subData.current_period_end,
@@ -168,11 +175,12 @@ $(document).ready(function() {
 					  });
 					}
 				});
+				$('.loader').css("display","none")
+
 			})
 		}
 	})
 	.then(()=>{
-		$('.loader').css("display","none")
 	});
 });
 function rootDomain(url) {
@@ -547,50 +555,38 @@ function SetSignedUserInfo(settings){
 	})
 }
 async function SetSubscriptionInfo(userSettings,subscriptionSettings) {
-	if(subscriptionSettings.trial !== undefined && subscriptionSettings.trial == true){
-		$("#manage_subscription").css("display","none");
-		if(subscriptionSettings.endtime !==undefined && subscriptionSettings.endtime >= Date.now())
-		{
-			$('#subscription').text("Trial Plan");
-			$('#subscription').prop("title","Upgrade to Premium Plan" );
-			$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.endtime));
-			$('#ssa_tab').removeClass("ssa_tab_disable");
-		}
-		else{
-			$('#subscription').text("Your trial has expired");
-			$('#subscription').prop("title","Please subcribe to continue use" );
-			$('#ssa_tab').addClass("ssa_tab_disable");
-		}
-		$('#subscription').on("click",async()=>{
+	if(subscriptionSettings.status == "active")
+	{
+		$('#subscription').text(subscriptionSettings.name);
+		$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.current_period_end.seconds*1000));
+		$("#manage_subscription").val("Unsubscribe");
+		// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
+		$('#ssa_tab').removeClass("ssa_tab_disable");
+		$('#manage_subscription').on("click",async()=>{
+			$('.loader').css("display","block")
+			var portal_link = await customerDataService.getCustomerPortalLink();
+			chrome.tabs.create({ url: portal_link });
+		})
+	}
+	else if(subscriptionSettings.status == "canceled"){
+		$('#subscription').text(`Your ${subscriptionSettings.name} has expired`);
+		$("#manage_subscription").val("Subscribe");
+		// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
+		$('#ssa_tab').addClass("ssa_tab_disable");
+		$('#manage_subscription').on("click",async()=>{
 			$('.loader').css("display","block")
 			await customerDataService.addSubscription(userSettings.uid);
 		})
 	}
-	else{
-		$("#manage_subscription").css("display","block")
-		if(subscriptionSettings.status == "active")
-		{
-			$('#subscription').text(subscriptionSettings.name);
-			$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.current_period_end.seconds*1000));
-			$("#manage_subscription").text("Manage your plan");
-			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
-			$('#ssa_tab').removeClass("ssa_tab_disable");
-			$('#manage_subscription').on("click",async()=>{
-				$('.loader').css("display","block")
-				var portal_link = await customerDataService.getCustomerPortalLink();
-				chrome.tabs.create({ url: portal_link });
-			})
-		}
-		else{
-			$('#subscription').text(`Your ${subscriptionSettings.name} has expired`);
-			$("#manage_subscription").text("Renew your plan");
-			// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
-			$('#ssa_tab').addClass("ssa_tab_disable");
-			$('#manage_subscription').on("click",async()=>{
-				$('.loader').css("display","block")
-				await customerDataService.addSubscription(userSettings.uid);
-			})
-		}
+	else if(subscriptionSettings.status == "trialing"){
+		$('#subscription').text(subscriptionSettings.name);
+		$('#expired').text("Expired date:"+toDateTime(subscriptionSettings.current_period_end));
+		$("#manage_subscription").val("Subscribe");
+		// $("#manage_subscription").attr("href",subscriptionSettings.portal_link);
+		$('#manage_subscription').on("click",async()=>{
+			$('.loader').css("display","block")
+			await customerDataService.addSubscription(userSettings.uid);
+		})
 	}
 }
 function dhm (ms) {

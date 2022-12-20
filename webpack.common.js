@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
   // Note: 
@@ -14,8 +14,9 @@ module.exports = {
     background: './src/background/background.js',
     popup: './src/popup/popup.js',
     main_script: './src/popup/main-script.js',
-    customer_service: './src/popup/customer_service.js'
-  },
+    customer_service: './src/popup/customer_service.js',
+    stripe_service: './src/popup/stripe_service.js'
+    },
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
@@ -44,10 +45,18 @@ module.exports = {
         { from: './src/images/*' }
       ],
     }),
+    new NodePolyfillPlugin({
+			excludeAliases: ['console']
+		})
   ],
   output: {
     // chrome load uppacked extension looks for files under dist/* folder
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
+  },
+  resolve: {
+    fallback: {
+      "child_process": "empty"
+    }
   },
 };

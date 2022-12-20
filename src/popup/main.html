@@ -83,22 +83,13 @@
 		<img src="/src/icons/64.png" width="64px" height="64px">
 	</div>
 	<div id="ssa_user_info">
-		<div class="d-flex justify-content-between bd-highlight">
-			<div class="bd-highlight">
-				<img id="photoUrl" height="71px" class="rounded">
-				
+		<div class="d-flex justify-content-between pb-1">
+			<div>
+				<input type="button" class="btn btn-primary float-left" id="manage_subscription" value="Subcribe"></input>
 			</div>
-			<div class="card-body d-flex flex-column align-items-start p-0 ml-1">
-				<span id="displayName" class="header-title text-primary">
-				</span>
-				<a href="#" class="link-success" id="subscription"></a>
-				<span id="expired" class="mb-1 text-primary">
-				</span>
-			</div>
-			<div class="card-body d-flex flex-column align-items-end p-0 ml-1">
-				<div class="form-group" style="padding-right:5px">
-					<input id="sign-out" type="button" class="btn btn-primary float-right" height="45px" value="Sign out">
-					<a href="#" style="display:none;" id="manage_subscription">Upgrade</a>
+			<div>
+				<div class="form-group">
+					<input id="sign-out" type="button" class="btn btn-primary float-right mr-1" value="Sign out">
 				</div>
 			</div>
 		</div>
@@ -254,6 +245,19 @@
 							<ul id="ulsetting" class="ant-list-items">
 								
 							</ul>
+							<div class="d-flex justify-content-between bd-highlight mt-2">
+								<div class="bd-highlight">
+									<img id="photoUrl" height="71px" class="rounded">
+									
+								</div>
+								<div class="card-body d-flex flex-column align-items-start p-0 ml-1">
+									<span id="displayName" class="header-title text-primary">
+									</span>
+									<span class="text-primary" id="subscription"></span>
+									<span id="expired" class="mb-1 text-primary">
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

@@ -11,12 +11,11 @@
       "64": "./src/icons/64.png",
       "128": "./src/icons/128.png"
     },
-    "default_title": "UnDi$tracted"
+    "default_title": "Uniblocker"
   },
   "permissions": [
     "storage",
     "activeTab",
-    "scripting",
     "identity",
     "webNavigation"
   ],
@@ -66,15 +65,12 @@
     "64": "./src/icons/64.png",
     "128": "./src/icons/128.png"
   },
-  "update_url": "https://clients2.google.com/service/update2/crx",
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline' https://apis.google.com;"
-  },
+      "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline' https://apis.google.com https://api.stripe.com;"
+   },
  "oauth2": {
-    "client_id": "203641531064-23v09912p82osni878lsv4gqhk41lqif.apps.googleusercontent.com",
+    "client_id": "634535868820-1aa60pm6tlka455n42n0u8hpqcasuiop.apps.googleusercontent.com",
     "scopes": [
-      "profile",
-      "email",
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile"
     ]

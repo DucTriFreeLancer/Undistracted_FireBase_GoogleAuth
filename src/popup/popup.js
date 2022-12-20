@@ -36,7 +36,8 @@ function initFirebaseApp() {
         if (user != null) {
             console.log('logged in!');
             console.log("current")
-		    window.location.replace('./main.html');
+            window.location.replace('./main.html');
+
         } else {
             console.log('No user');
             startSignIn()
