@@ -1,7 +1,6 @@
 import {fireStore,firebaseApp,STRIPE_PRICE_ID,STRIPE_SECRET_KEY} from "./firebase_config.js";
 import { getFunctions,httpsCallable } from "firebase/functions"; 
 import {collection,getDocs,getDoc,doc, setDoc,deleteDoc,query,where,addDoc,onSnapshot} from "firebase/firestore"; 
-import { stripeService } from "./stripe_service.js";
 const userRef = collection(fireStore,"customers");
 
 class CustomerDataService {

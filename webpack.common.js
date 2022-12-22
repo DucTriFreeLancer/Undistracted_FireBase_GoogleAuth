@@ -15,7 +15,6 @@ module.exports = {
     popup: './src/popup/popup.js',
     main_script: './src/popup/main-script.js',
     customer_service: './src/popup/customer_service.js',
-    stripe_service: './src/popup/stripe_service.js'
     },
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
