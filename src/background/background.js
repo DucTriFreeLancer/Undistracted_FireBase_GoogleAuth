@@ -1,4 +1,55 @@
-import { stripeService } from '../popup/stripe_service'
+import { firebaseApp } from '../popup/firebase_config'
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithCredential,
+    GoogleAuthProvider,
+    setPersistence,
+    browserLocalPersistence,
+} from 'firebase/auth';
+// Auth instance for the current firebaseApp
+const auth = getAuth(firebaseApp);
+
+// receive message from popup.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.message === "startAuth") {
+        console.log("startAuth")
+        startAuth(true,sendResponse)
+        return true;
+    }
+});
+/**
+ * Start the auth flow and authorizes to Firebase.
+ * @param{boolean} interactive True if the OAuth flow should request with an interactive mode.
+ */
+function startAuth(interactive,sendResponse) {
+  console.log("Auth trying")
+  chrome.identity.getAuthToken({ interactive: true }, function (token) {
+      //Token:  This requests an OAuth token from the Chrome Identity API.
+      if (chrome.runtime.lastError && !interactive) {
+          console.log('It was not possible to get a token programmatically.');
+      } else if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+      } else if (token) {
+          // Follows: https://firebase.google.com/docs/auth/web/google-signin
+          // Authorize Firebase with the OAuth Access Token.
+          // console.log("TOKEN:")
+          // console.log(token)
+          // Builds Firebase credential with the Google ID token.
+          const credential = GoogleAuthProvider.credential(null, token);
+          signInWithCredential(auth, credential).then((result) => {
+              console.log("Success!!!")
+              console.log(result)
+              sendResponse(result);
+          }).catch((error) => {
+              // You can handle errors here
+              console.error(error);
+          });
+      } else {
+          console.error('The OAuth token was null');
+      }
+  });
+}
 
 // Avoid circular
 const fallbackUrl = 'https://www.google.com';
@@ -874,19 +925,6 @@ chrome.webNavigation.onBeforeNavigate.addListener(({ frameId, tabId, url }) => {
         );
       }
     }
-  }
-});
-// Listen logged_in message from popup.html
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.message == 'logged_in') {
-    const customer=  await stripeService.getCustomerByEmail(request.email);
-    if(customer){
-      const subscription= await stripeService.getSubscription(customer.id);
-      if(subscription.length === 0){
-        await stripeService.createTrialSubscription(customer.id);
-      }
-    }
-    sendResponse({ logged_in: true });
   }
 });
 

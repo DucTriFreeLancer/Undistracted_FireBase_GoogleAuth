@@ -7,7 +7,9 @@ import {
     browserLocalPersistence
 } from 'firebase/auth';
 import { customerDataService } from './customer_service';
+// Auth instance for the current firebaseApp
 const auth = getAuth(firebaseApp);
+setPersistence(auth, browserLocalPersistence)
 
 async function redirectToMainPage(user){
     

@@ -58,38 +58,12 @@ function startSignIn() {
         auth.signOut();
     } else {
         console.log("proceed")
-        startAuth(true);
+        //send message to background.js
+        chrome.runtime.sendMessage({ message: "startAuth" }, function (response) {
+            if(response.operationType == "signIn" && response.user != null){
+                window.location.replace('./main.html');
+            }
+        });
     }
 }
 
-/**
- * Start the auth flow and authorizes to Firebase.
- * @param{boolean} interactive True if the OAuth flow should request with an interactive mode.
- */
-function startAuth(interactive) {
-    console.log("Auth trying")
-    chrome.identity.getAuthToken({ interactive: true }, function (token) {
-        //Token:  This requests an OAuth token from the Chrome Identity API.
-        if (chrome.runtime.lastError && !interactive) {
-            console.log('It was not possible to get a token programmatically.');
-        } else if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError);
-        } else if (token) {
-            // Follows: https://firebase.google.com/docs/auth/web/google-signin
-            // Authorize Firebase with the OAuth Access Token.
-            // console.log("TOKEN:")
-            // console.log(token)
-            // Builds Firebase credential with the Google ID token.
-            const credential = GoogleAuthProvider.credential(null, token);
-            signInWithCredential(auth, credential).then((result) => {
-                console.log("Success!!!")
-                console.log(result)
-            }).catch((error) => {
-                // You can handle errors here
-                alert(error)
-            });
-        } else {
-            console.error('The OAuth token was null');
-        }
-    });
-}
